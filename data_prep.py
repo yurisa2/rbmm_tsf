@@ -34,6 +34,7 @@ def hours_days_standardize(date_in):
 
 
 def result_functions(price_in, thresh_in):
+    price_in = price_in.shift(-1)
     def result_func(last_2, thresh=20):
         raw = last_2[-1] - last_2[0]
         if raw > thresh:

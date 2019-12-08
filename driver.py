@@ -5,7 +5,11 @@ from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout, Embedding, LSTM, GlobalMaxPooling1D, SpatialDropout1D
 
-data = pd.read_csv("winprep.csv", header=0)
+data = pd.read_csv("winM1prepd.csv", header=0)
+
+test_shift = data['v22'][1:20]
+
+test_shift.shift(-1)
 
 data.shape
 
@@ -52,11 +56,11 @@ model = Sequential()
 
 model.add(LSTM(1, activation='relu', input_shape=(100, 7)))
 model.add(Dense(3, activation='softmax')) #since number of output classes is 4
-model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 model.summary()
 model.fit(x_train_reshaped,
           y_train_one_hot,
           validation_split=0.3,
           epochs=10,
-          # batch_size=3
+          batch_size=3
           )
