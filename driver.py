@@ -8,10 +8,10 @@ import data_prep as dtp
 from tensorflow.keras.utils import to_categorical
 
 colnames = ['DATE', 'O', 'H', 'L', 'C', 'V1', 'V2']
-win = pd.read_csv("data/winm10.csv", names=colnames, header=None)
-wdo = pd.read_csv("data/winm10.csv", names=colnames, header=None)
+win = pd.read_csv("data/winm1.csv", names=colnames, header=None)
+wdo = pd.read_csv("data/wdom1.csv", names=colnames, header=None)
 
-x = dtp.build_dataset(win, wdo, ROLL=20, thresh=100)
+x = dtp.build_dataset(win, wdo, ROLL=100, thresh=10, debug=True, func='normalize')
 
 y = np.array(x['target'])
 
@@ -21,19 +21,17 @@ x = np.array(x)
 X_train = x
 y_train = y
 
-
-look_back = 200
-
+look_back = 100
 
 x_train_reshaped, y_train_reshaped = dtp.timesteps(look_back, X_train, y_train)
 
 y_train_one_hot = to_categorical(y_train_reshaped)
 
 model = mdl.convo1D(look_back,
-                    filters1=16,
-                    filters2=32,
-                    kernel1=3,
-                    kernel2=3,
+                    filters1=8,
+                    filters2=16,
+                    kernel1=5,
+                    kernel2=5,
                     pool_size1=2,
                     pool_size2=2,
                     ndense1=16,
@@ -55,7 +53,7 @@ hist = trn.train_model(x_train_reshaped,
                        model,
                        name='convo',
                        tboard=True,
-                       ckpt=True,
-                       epochs=10,
-                       batch=3,
+                       ckpt=False,
+                       epochs=100,
+                       batch=32,
                        )

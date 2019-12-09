@@ -22,7 +22,7 @@ def lstm_model(units,
                ):
     model = Sequential()
 
-    model.add(LSTM(units, activation=activation1, input_shape=(look_back, 7)))
+    model.add(LSTM(units, activation=activation1, input_shape=(look_back, 8)))
     model.add(Dense(3, activation=activation2))
     model.compile(loss=loss, optimizer=optimizer, metrics=['accuracy'])
     # model.summary()
@@ -47,7 +47,7 @@ def convo1D(look_back,
     model.add(Conv1D(filters1,
                      (kernel1),
                      activation='relu',
-                     input_shape=(look_back, 7)))
+                     input_shape=(look_back, 8)))
     model.add(MaxPooling1D(pool_size=(pool_size1)))
     model.add(Conv1D(filters2, (kernel2), activation='relu'))
     model.add(MaxPooling1D(pool_size=(pool_size2)))
