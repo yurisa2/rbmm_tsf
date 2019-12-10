@@ -27,33 +27,57 @@ x_train_reshaped, y_train_reshaped = dtp.timesteps(look_back, X_train, y_train)
 
 y_train_one_hot = to_categorical(y_train_reshaped)
 
-model = mdl.convo1D(look_back,
-                    filters1=8,
-                    filters2=16,
-                    kernel1=5,
-                    kernel2=5,
-                    pool_size1=2,
-                    pool_size2=2,
-                    ndense1=16,
-                    activation1='relu',
-                    activation2='softmax',
-                    optimizer='adam',
-                    loss='categorical_crossentropy')
+hist = []
 
-# model = mdl.lstm_model(1,
-#                        look_back,
-#                        activation1='relu',
-#                        activation2='softmax',
-#                        optimizer='adam',
-#                        loss='categorical_crossentropy')
+opt_list = ['rmsprop','adam','nadam','Adadelta']
+act1_list = ['relu','elu']
+loss_list = ['binary_crossentropy','categorical_crossentropy']
+filters_list = [4,8,16,32]
+kernel_list = [2,3,4,5,7]
+pool_list = [2,3,5]
+ndense_list = [16,32,64,128,256]
 
 
-hist = trn.train_model(x_train_reshaped,
-                       y_train_one_hot,
-                       model,
-                       name='convo',
-                       tboard=True,
-                       ckpt=False,
-                       epochs=100,
-                       batch=32,
-                       )
+for optimizer_for in opt_list:
+    for act1_for in act1_list:
+        for loss_for in loss_list:
+            for filters_for in filters_list:
+                for kernel_for in kernel_list:
+                    for pool_for in pool_list:
+                        for ndense_for in ndense_list:
+                            
+                    
+                            model = mdl.convo1D(look_back,
+                                                filters1=filters_for,
+                                                filters2=filters_for*2,
+                                                kernel1=kernel_for,
+                                                kernel2=kernel_for,
+                                                pool_size1=pool_for,
+                                                pool_size2=pool_for,
+                                                ndense1=ndense_for,
+                                                activation1=act1_for,
+                                                activation2='softmax',
+                                                optimizer=optimizer_for,
+                                                loss=loss_for)
+                            
+                            # model = mdl.lstm_model(1,
+                            #                        look_back,
+                            #                        activation1='relu',
+                            #                        activation2='softmax',
+                            #                        optimizer='adam',
+                            #                        loss='categorical_crossentropy')
+                            
+                             
+                            hist.append(trn.train_model(x_train_reshaped,
+                                                   y_train_one_hot,
+                                                   model,
+                                                   name='convo',
+                                                   tboard=False,
+                                                   ckpt=False,
+                                                   epochs=1000,
+                                                   batch=100,
+                                                   estop=True,
+                                                   estop_patience=10,
+                                                   
+                                                   )
+                                        )

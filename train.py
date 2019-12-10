@@ -8,14 +8,29 @@ def train_model(x,
                 ckpt=False,
                 epochs=10,
                 batch=3,
-                val_split=0.3):
+                val_split=0.3,
+                estop=False,
+                estop_patience=10,
+                estop_min_delta=0.0001,
+                estop_monitor='val_accuracy'
+                ):
 
     from datetime import datetime
     import os
     from tensorflow.keras.callbacks import ModelCheckpoint
     from tensorflow.keras.callbacks import TensorBoard
+    from tensorflow.keras.callbacks import EarlyStopping
 
     callbacks = []
+
+
+    if estop is True:
+        earlystop_callback = EarlyStopping(
+          monitor=estop_monitor, min_delta=estop_min_delta,
+          patience=estop_patience)
+        callbacks.append(earlystop_callback)
+        pass
+
 
     if tboard is True:
         logdir = 'logs/' + datetime.now().strftime("%Y%m%d-%H%M%S-") + name
