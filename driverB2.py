@@ -84,3 +84,25 @@ for opt_param in param:
                 )
 
 model.get_config()
+
+
+con_mat_norm = np.around(con_mat.astype('float') / con_mat.sum(axis=1)[:, np.newaxis], decimals=2)
+
+con_mat_df = pd.DataFrame(con_mat_norm,
+                     index = classes,
+                     columns = classes)
+
+
+
+y_pred=model.predict_classes(test_images)
+con_mat = tf.math.confusion_matrix(labels=y_true, predictions=y_pred).numpy()
+
+
+hist[0].history.keys()
+min(hist[0].history["loss"])
+
+
+for keys in hist[0].history.keys():
+    print(keys)
+    print(min(hist[0].history[keys]))
+    pass

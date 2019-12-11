@@ -81,11 +81,3 @@ for optimizer_for in opt_list:
                                                         )
                                         )
                             count = count + 1
-hist[0].history.keys()
-min(hist[0].history["loss"])
-
-
-for keys in hist[0].history.keys():
-    print(keys)
-    print(min(hist[0].history[keys]))
-    pass
