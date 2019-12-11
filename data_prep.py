@@ -50,7 +50,7 @@ def days_standardize(date_in, func='standard'):
 
 def result_functions(price_in, thresh_in):
     price_in = price_in.shift(-1)
-    def result_func(last_2, thresh=20):
+    def result_func(last_2, thresh):
         raw = last_2[-1] - last_2[0]
         if raw > thresh:
             return 2

@@ -29,15 +29,15 @@ y_train_one_hot = to_categorical(y_train_reshaped)
 
 hist = []
 
-opt_list = ['rmsprop','adam','nadam','Adadelta']
-act1_list = ['relu','elu']
-loss_list = ['binary_crossentropy','categorical_crossentropy']
-filters_list = [4,8,16,32]
-kernel_list = [2,3,4,5,7]
-pool_list = [2,3,5]
-ndense_list = [16,32,64,128,256]
+opt_list = ['rmsprop']
+act1_list = ['relu']
+loss_list = ['binary_crossentropy']
+filters_list = [4]
+kernel_list = [2]
+pool_list = [2]
+ndense_list = [16]
 
-
+count = 0
 for optimizer_for in opt_list:
     for act1_for in act1_list:
         for loss_for in loss_list:
@@ -45,8 +45,9 @@ for optimizer_for in opt_list:
                 for kernel_for in kernel_list:
                     for pool_for in pool_list:
                         for ndense_for in ndense_list:
-                            
-                    
+                            print('############################################################')
+                            print(count)
+
                             model = mdl.convo1D(look_back,
                                                 filters1=filters_for,
                                                 filters2=filters_for*2,
@@ -59,25 +60,32 @@ for optimizer_for in opt_list:
                                                 activation2='softmax',
                                                 optimizer=optimizer_for,
                                                 loss=loss_for)
-                            
+
                             # model = mdl.lstm_model(1,
                             #                        look_back,
                             #                        activation1='relu',
                             #                        activation2='softmax',
                             #                        optimizer='adam',
                             #                        loss='categorical_crossentropy')
-                            
-                             
+
                             hist.append(trn.train_model(x_train_reshaped,
-                                                   y_train_one_hot,
-                                                   model,
-                                                   name='convo',
-                                                   tboard=False,
-                                                   ckpt=False,
-                                                   epochs=1000,
-                                                   batch=100,
-                                                   estop=True,
-                                                   estop_patience=10,
-                                                   
-                                                   )
+                                                        y_train_one_hot,
+                                                        model,
+                                                        name='convo',
+                                                        tboard=False,
+                                                        ckpt=False,
+                                                        epochs=5,
+                                                        batch=150,
+                                                        estop=True,
+                                                        estop_patience=10,
+                                                        )
                                         )
+                            count = count + 1
+hist[0].history.keys()
+min(hist[0].history["loss"])
+
+
+for keys in hist[0].history.keys():
+    print(keys)
+    print(min(hist[0].history[keys]))
+    pass
