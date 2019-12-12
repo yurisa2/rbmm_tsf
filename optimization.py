@@ -76,10 +76,17 @@ for index, row in param.sample(n=len(param)).iterrows():
             print('Passing by: ', index)
             continue
 
-    params_online = pd.read_csv('http://ti.sa2.com.br/rbmm/optimizations/optim_results.csv')
-    if index in params_online['param_index'].values:
-        print('Passing by (online): ', index)
-        del(params_online)
+    try:
+        params_online = pd.read_csv('http://ti.sa2.com.br/rbmm/optimizations/optim_results.csv')
+        if index in params_online['param_index'].values:
+            print('Passing by (online): ', index)
+            del(params_online)
+            continue
+    except:
+        print('#############################################')
+        print('Offline Dude')
+        print('#############################################')
+
         continue
 
     print('Optimizing index: ', index)
@@ -147,12 +154,19 @@ for index, row in param.sample(n=len(param)).iterrows():
         pass
     hist_df['param_index'] = index
 
-    headers = {'Content-Type': 'application/json',
-               'Accept': 'application/json'}
-    response = requests.post('http://ti.sa2.com.br/rbmm/update_csv.php',
-                             data=json.dumps(hist_df.values.tolist()),
-                             headers=headers
-                             )
+    try:
+        headers = {'Content-Type': 'application/json',
+                   'Accept': 'application/json'}
+        response = requests.post('http://ti.sa2.com.br/rbmm/update_csv.php',
+                                 data=json.dumps(hist_df.values.tolist()),
+                                 headers=headers
+                                 )
+    except:
+        print('#############################################')
+        print('Offline Dude')
+        print('#############################################')
+
+        continue
 
     res_df = res_df.append(hist_df)
     res_df.to_csv("optimizations/optim_results.csv", index=False)
