@@ -23,7 +23,7 @@ if os.path.exists('optimizations/params.csv') is False:
     filters_list = [4, 8, 16, 32]
     kernel_list = [2, 3, 4, 5, 7]
     pool_list = [2, 3, 5]
-    ndense_list = [16, 32, 64, 128, 256]
+    ndense_list = [4, 8, 16, 32, 64, 128, 256]
     roll_list = [20, 50, 100, 200]
     lb_list = [10, 20, 50, 100, 200, 500]
 
@@ -65,8 +65,7 @@ else:
 #################################
 
 hist = []
-
-for index, row in param.iterrows():
+for index, row in param.sample(n=len(param)).iterrows():
     print('#############################################')
     if 'param_index' in res_df.columns:
         if index in res_df['param_index'].values:
