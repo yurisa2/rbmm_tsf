@@ -137,6 +137,7 @@ for index, row in param.sample(n=len(param)).iterrows():
                                     batch=3,
                                     estop=True,
                                     estop_patience=20,
+                                    estop_monitor='val_accuracy'
                                     )
                     )
         del(model)
