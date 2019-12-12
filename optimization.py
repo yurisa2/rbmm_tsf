@@ -15,8 +15,8 @@ import itertools
 from tensorflow.keras.utils import to_categorical
 
 colnames = ['DATE', 'O', 'H', 'L', 'C', 'V1', 'V2']
-win = pd.read_csv("data/winm1.csv", names=colnames, header=None)
-wdo = pd.read_csv("data/wdom1.csv", names=colnames, header=None)
+win = pd.read_csv("data/winm1.csv", names=colnames, header=None, encoding='utf-16')
+wdo = pd.read_csv("data/wdom1.csv", names=colnames, header=None, encoding='utf-16')
 
 if os.path.exists('optimizations/params.csv') is False:
 
@@ -132,7 +132,7 @@ for index, row in param.sample(n=len(param)).iterrows():
         pass
     hist_df['param_index'] = index
 
-    headers = {'Content-Type': 'application/json', 'Accept':'application/json'}
+    headers = {'Content-Type': 'application/json', 'Accept': 'application/json'}
     response = requests.post('http://ti.sa2.com.br/rbmm/update_csv.php',data=json.dumps(hist_df.values.tolist()), headers=headers)
 
     res_df = res_df.append(hist_df)
