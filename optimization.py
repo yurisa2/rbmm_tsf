@@ -53,6 +53,7 @@ if os.path.exists('optimizations/params.csv') is False:
                                         'roll_list',
                                         'lb_list'
                                         ])
+    del(comb)
     print('Writing params.csv')
     param.to_csv('optimizations/params.csv')
 else:
@@ -78,8 +79,8 @@ for index, row in param.sample(n=len(param)).iterrows():
     params_online = pd.read_csv('http://ti.sa2.com.br/rbmm/optimizations/optim_results.csv')
     if index in params_online['param_index'].values:
         print('Passing by (online): ', index)
+        del(params_online)
         continue
-
 
     print('Optimizing index: ', index)
     print('#############################################')
@@ -96,42 +97,49 @@ for index, row in param.sample(n=len(param)).iterrows():
     del(x['target'])
     x = np.array(x)
 
-    X_train = x
-    y_train = y
-
     look_back = row['lb_list']
 
-    x_train_reshaped, y_train_reshaped = dtp.timesteps(look_back,
-                                                       X_train,
-                                                       y_train)
+    x_train_reshaped, y_train_reshaped = dtp.timesteps(look_back, x, y)
     y_train_one_hot = to_categorical(y_train_reshaped)
 
-    model = mdl.convo1D(look_back,
-                        filters1=row["filters_list"],
-                        filters2=row["filters_list"]*2,
-                        kernel1=row["kernel_list"],
-                        kernel2=row["kernel_list"],
-                        pool_size1=row["pool_list"],
-                        pool_size2=row["pool_list"],
-                        ndense1=row["ndense_list"],
-                        activation1=row["act1_list"],
-                        activation2='softmax',
-                        optimizer=row['opt_list'],
-                        loss=row['loss_list']
-                        )
+    del(x)
+    del(y)
+    del(y_train_reshaped)
+    try:
+        model = mdl.convo1D(look_back,
+                            filters1=row["filters_list"],
+                            filters2=row["filters_list"]*2,
+                            kernel1=row["kernel_list"],
+                            kernel2=row["kernel_list"],
+                            pool_size1=row["pool_list"],
+                            pool_size2=row["pool_list"],
+                            ndense1=row["ndense_list"],
+                            activation1=row["act1_list"],
+                            activation2='softmax',
+                            optimizer=row['opt_list'],
+                            loss=row['loss_list']
+                            )
 
-    hist.append(trn.train_model(x_train_reshaped,
-                                y_train_one_hot,
-                                model,
-                                name='convo',
-                                tboard=False,
-                                ckpt=False,
-                                epochs=1000,
-                                batch=100,
-                                estop=True,
-                                estop_patience=20,
-                                )
-                )
+        hist.append(trn.train_model(x_train_reshaped,
+                                    y_train_one_hot,
+                                    model,
+                                    name='HyperOptim',
+                                    tboard=False,
+                                    ckpt=False,
+                                    epochs=1000,
+                                    batch=3,
+                                    estop=True,
+                                    estop_patience=20,
+                                    )
+                    )
+        del(model)
+    except:
+        print('#############################################')
+        print('Bad Omen')
+        print('#############################################')
+
+        continue
+
 
     hist_df = pd.DataFrame()
     for keys in hist[-1].history.keys():
