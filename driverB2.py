@@ -56,20 +56,20 @@ res_df = pd.DataFrame()
 
 for index, row in param.iterrows():
 
-x = dtp.build_dataset(win, wdo, ROLL=row["roll_list"], thresh=10, debug=True, func='normalize')
+    x = dtp.build_dataset(win, wdo, ROLL=row["roll_list"], thresh=10, debug=True, func='normalize')
 
-y = np.array(x['target'])
+    y = np.array(x['target'])
 
-del(x['target'])
-x = np.array(x)
+    del(x['target'])
+    x = np.array(x)
 
-X_train = x
-y_train = y
+    X_train = x
+    y_train = y
 
-look_back = row['lb_list']
+    look_back = row['lb_list']
 
-x_train_reshaped, y_train_reshaped = dtp.timesteps(look_back, X_train, y_train)
-y_train_one_hot = to_categorical(y_train_reshaped)
+    x_train_reshaped, y_train_reshaped = dtp.timesteps(look_back, X_train, y_train)
+    y_train_one_hot = to_categorical(y_train_reshaped)
 
     model = mdl.convo1D(look_back,
                         filters1=row["filters_list"],
@@ -103,7 +103,7 @@ y_train_one_hot = to_categorical(y_train_reshaped)
 
     res_df = res_df.append(hist_df)
     res_df.to_csv("first_optim_attpm.csv")
-    
+
 
 #
 #
