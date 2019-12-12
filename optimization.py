@@ -84,7 +84,12 @@ for index, row in param.sample(n=len(param)).iterrows():
     print('Optimizing index: ', index)
     print('#############################################')
 
-    x = dtp.build_dataset(win, wdo, ROLL=row["roll_list"], thresh=10, debug=False, func='normalize')
+    x = dtp.build_dataset(win,
+                          wdo,
+                          ROLL=row["roll_list"],
+                          thresh=10,
+                          debug=False,
+                          func='normalize')
 
     y = np.array(x['target'])
 
@@ -96,7 +101,9 @@ for index, row in param.sample(n=len(param)).iterrows():
 
     look_back = row['lb_list']
 
-    x_train_reshaped, y_train_reshaped = dtp.timesteps(look_back, X_train, y_train)
+    x_train_reshaped, y_train_reshaped = dtp.timesteps(look_back,
+                                                       X_train,
+                                                       y_train)
     y_train_one_hot = to_categorical(y_train_reshaped)
 
     model = mdl.convo1D(look_back,
@@ -119,10 +126,10 @@ for index, row in param.sample(n=len(param)).iterrows():
                                 name='convo',
                                 tboard=False,
                                 ckpt=False,
-                                epochs=1,
+                                epochs=1000,
                                 batch=100,
                                 estop=True,
-                                estop_patience=10,
+                                estop_patience=20,
                                 )
                 )
 
@@ -132,8 +139,12 @@ for index, row in param.sample(n=len(param)).iterrows():
         pass
     hist_df['param_index'] = index
 
-    headers = {'Content-Type': 'application/json', 'Accept': 'application/json'}
-    response = requests.post('http://ti.sa2.com.br/rbmm/update_csv.php',data=json.dumps(hist_df.values.tolist()), headers=headers)
+    headers = {'Content-Type': 'application/json',
+               'Accept': 'application/json'}
+    response = requests.post('http://ti.sa2.com.br/rbmm/update_csv.php',
+                             data=json.dumps(hist_df.values.tolist()),
+                             headers=headers
+                             )
 
     res_df = res_df.append(hist_df)
     res_df.to_csv("optimizations/optim_results.csv", index=False)
