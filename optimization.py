@@ -7,6 +7,9 @@ import data_prep as dtp
 
 import os
 
+import json
+import requests
+
 import itertools
 
 from tensorflow.keras.utils import to_categorical
@@ -72,6 +75,12 @@ for index, row in param.sample(n=len(param)).iterrows():
             print('Passing by: ', index)
             continue
 
+    params_online = pd.read_csv('http://ti.sa2.com.br/rbmm/optimizations/optim_results.csv')
+    if index in params_online['param_index'].values:
+        print('Passing by (online): ', index)
+        continue
+
+
     print('Optimizing index: ', index)
     print('#############################################')
 
@@ -122,6 +131,9 @@ for index, row in param.sample(n=len(param)).iterrows():
         hist_df[keys] = (hist[-1].history[keys])
         pass
     hist_df['param_index'] = index
+
+    headers = {'Content-Type': 'application/json', 'Accept':'application/json'}
+    response = requests.post('http://ti.sa2.com.br/rbmm/update_csv.php',data=json.dumps(hist_df.values.tolist()), headers=headers)
 
     res_df = res_df.append(hist_df)
     res_df.to_csv("optimizations/optim_results.csv", index=False)

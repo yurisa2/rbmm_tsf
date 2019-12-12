@@ -12,7 +12,7 @@ def train_model(x,
                 estop=False,
                 estop_patience=10,
                 estop_min_delta=0.0001,
-                estop_monitor='val_accuracy'
+                estop_monitor='val_acc'
                 ):
 
     from datetime import datetime
