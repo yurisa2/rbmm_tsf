@@ -28,7 +28,7 @@ if os.path.exists('optimizations/params.csv') is False:
     pool_list = [2, 3, 5]
     ndense_list = [4, 8, 16, 32, 64, 128, 256]
     roll_list = [20, 50, 100, 200]
-    lb_list = [10, 20, 50, 100, 200, 500]
+    lb_list = [20, 50, 100, 200, 500]
 
     comb = list(itertools.product(opt_list,
                                   act1_list,
