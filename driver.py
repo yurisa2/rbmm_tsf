@@ -27,57 +27,62 @@ x_train_reshaped, y_train_reshaped = dtp.timesteps(look_back, X_train, y_train)
 
 y_train_one_hot = to_categorical(y_train_reshaped)
 
-hist = []
 
-opt_list = ['rmsprop']
-act1_list = ['relu']
-loss_list = ['binary_crossentropy']
-filters_list = [4]
-kernel_list = [2]
-pool_list = [2]
-ndense_list = [16]
+model = mdl.convo1D(look_back,
+                    filters1=filters_for,
+                    filters2=filters_for*2,
+                    kernel1=kernel_for,
+                    kernel2=kernel_for,
+                    pool_size1=pool_for,
+                    pool_size2=pool_for,
+                    ndense1=ndense_for,
+                    activation1=act1_for,
+                    activation2='softmax',
+                    optimizer=optimizer_for,
+                    loss=loss_for)
 
-count = 0
-for optimizer_for in opt_list:
-    for act1_for in act1_list:
-        for loss_for in loss_list:
-            for filters_for in filters_list:
-                for kernel_for in kernel_list:
-                    for pool_for in pool_list:
-                        for ndense_for in ndense_list:
-                            print('############################################################')
-                            print(count)
+# model = mdl.lstm_model(1,
+#                        look_back,
+#                        activation1='relu',
+#                        activation2='softmax',
+#                        optimizer='adam',
+#                        loss='categorical_crossentropy')
 
-                            model = mdl.convo1D(look_back,
-                                                filters1=filters_for,
-                                                filters2=filters_for*2,
-                                                kernel1=kernel_for,
-                                                kernel2=kernel_for,
-                                                pool_size1=pool_for,
-                                                pool_size2=pool_for,
-                                                ndense1=ndense_for,
-                                                activation1=act1_for,
-                                                activation2='softmax',
-                                                optimizer=optimizer_for,
-                                                loss=loss_for)
+hist.append(trn.train_model(x_train_reshaped,
+                            y_train_one_hot,
+                            model,
+                            name='convo',
+                            tboard=False,
+                            ckpt=False,
+                            epochs=5,
+                            batch=150,
+                            estop=True,
+                            estop_patience=10,
+                            )
+            )
+count = count + 1
 
-                            # model = mdl.lstm_model(1,
-                            #                        look_back,
-                            #                        activation1='relu',
-                            #                        activation2='softmax',
-                            #                        optimizer='adam',
-                            #                        loss='categorical_crossentropy')
 
-                            hist.append(trn.train_model(x_train_reshaped,
-                                                        y_train_one_hot,
-                                                        model,
-                                                        name='convo',
-                                                        tboard=False,
-                                                        ckpt=False,
-                                                        epochs=5,
-                                                        batch=150,
-                                                        estop=True,
-                                                        estop_patience=10,
-                                                        )
-                                        )
-                            count = count + 1
+
+
+
+
+
+
+
+#
+#
+# model.get_config()
+#
+#
+# con_mat_norm = np.around(con_mat.astype('float') / con_mat.sum(axis=1)[:, np.newaxis], decimals=2)
+#
+# con_mat_df = pd.DataFrame(con_mat_norm,
+#                      index = classes,
+#                      columns = classes)
+#
+#
+#
+# y_pred=model.predict_classes(test_images)
+# con_mat = tf.math.confusion_matrix(labels=y_true, predictions=y_pred).numpy()
+#
