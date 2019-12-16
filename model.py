@@ -3,8 +3,6 @@ import pandas as pd
 from datetime import datetime
 import os
 
-import train as trn
-
 from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout, Embedding, LSTM, GlobalMaxPooling1D, SpatialDropout1D

@@ -137,7 +137,7 @@ for index, row in param.sample(n=len(param)).iterrows():
                                     batch=3,
                                     estop=True,
                                     estop_patience=20,
-                                    estop_monitor='val_accuracy'
+                                    estop_monitor='val_acc'
                                     )
                     )
         del(model)
@@ -166,7 +166,6 @@ for index, row in param.sample(n=len(param)).iterrows():
         print('#############################################')
         print('Offline Dude')
         print('#############################################')
-
         continue
 
     res_df = res_df.append(hist_df)
