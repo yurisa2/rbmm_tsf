@@ -41,6 +41,8 @@ last_ones = groupd.last()
 last_ones.describe()
 
 last_ones.sort_values(by='loss', ascending=True)
+last_ones.sort_values(by='val_acc', ascending=False)
+last_ones.sort_values(by='val_categorical_accuracy', ascending=False)
 
 last_ones["val_acc"]
 
